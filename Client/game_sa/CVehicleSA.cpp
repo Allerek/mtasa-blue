@@ -1977,8 +1977,8 @@ bool CVehicleSA::SetOnFire(bool onFire)
 void CVehicleSA::StaticSetHooks()
 {
     HookInstall(FUNC_CVehicle_GetTowBarPos, &GetTowBarPos, 5);
-    HookInstall(FUNC_CAutomobile_GetTowBarPos, &CAutomobile::GetTowBarPos, 5);
-    HookInstall(FUNC_CAutomobile_GetTowBarPos, &CTrailer::GetTowBarPos, 5);
+    HookInstall(FUNC_CAutomobile_GetTowBarPos, &CAutomobileSA::GetTowBarPos, 5);
+    HookInstall(FUNC_CAutomobile_GetTowBarPos, &CTrailerSA::GetTowBarPos, 5);
 
     // Setup vehicle sun glare hook
     HookInstall(FUNC_CAutomobile_OnVehiclePreRender, (DWORD)HOOK_Vehicle_PreRender, 5);
