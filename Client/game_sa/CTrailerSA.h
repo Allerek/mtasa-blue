@@ -24,5 +24,7 @@ class CTrailerSA final : public virtual CTrailer, public virtual CAutomobileSA
 public:
     CTrailerSA(CTrailerSAInterface* pInterface);
 
+    bool GetTowBarPos(CVector* pVector, bool bCheckModelInfo, CVehicle* pTrailer = NULL);
+
     CTrailerSAInterface* GetTrailerInterface() { return reinterpret_cast<CTrailerSAInterface*>(GetInterface()); }
 };

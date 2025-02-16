@@ -12,6 +12,7 @@
 #include "StdInc.h"
 #include "CAutomobileSA.h"
 #include "CGameSA.h"
+#include "CColModelSA.h"
 
 extern CGameSA* pGame;
 
@@ -19,6 +20,39 @@ CAutomobileSA::CAutomobileSA(CAutomobileSAInterface* pInterface)
 {
     SetInterface(pInterface);
     Init();
+}
+
+//https://github.com/gta-reversed/gta-reversed/blob/master/source/game_sa/Entity/Vehicle/Automobile.cpp#L3291
+//TODO: rest of the function, just towtruck now for testing
+bool CAutomobileSA::GetTowBarPos(CVector* pVector, bool ignoreModelType, CVehicle* pTrailer)
+{
+    int32 modelIndex = this->GetModelIndex();
+    switch (modelIndex)
+    {
+        case 525:
+        case 531:
+        {
+            float baseY = -1.05f;
+            if (modelIndex == 531)
+            {
+                if (pTrailer && pTrailer->GetBaseVehicleType() == (float)VehicleClass::TRAILER && pTrailer->GetModelIndex() != 610)
+                {
+                    return false;
+                }
+                baseY = -0.6f;
+            }
+            else if (pTrailer && pTrailer->GetBaseVehicleType() == (float)VehicleClass::TRAILER)
+            {
+                return false;
+            }
+            CColModelSAInterface* colModel = CModelInfoSAInterface::GetModelInfo(modelIndex)->pColModel;
+            auto                  vehicle = static_cast<CAutomobileSAInterface*>(GetInterface());
+            pVector->fX = 0.0f;
+            pVector->fY = baseY + colModel->m_bounds.m_vecMin.fY;
+            pVector->fZ = ((1.0f - (float)vehicle->m_wMiscComponentAngle / (float)20000) / 2.0f + 0.5f) - vehicle->m_fFrontHeightAboveRoad;
+            return true;
+        }
+    }
 }
 
 void CAutomobileSAInterface::SetPanelDamage(std::uint8_t panelId, bool breakGlass, bool spawnFlyingComponent)

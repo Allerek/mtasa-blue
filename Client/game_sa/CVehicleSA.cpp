@@ -835,30 +835,44 @@ float CVehicleSA::GetGasPedal()
     return GetVehicleInterface()->m_fGasPedal;
 }
 
-bool CVehicleSA::GetTowBarPos(CVector* pVector, CVehicle* pTrailer)
-{
-    CVehicleSAInterfaceVTBL* vehicleVTBL = (CVehicleSAInterfaceVTBL*)(m_pInterface->vtbl);
-    DWORD                    dwThis = (DWORD)m_pInterface;
-    DWORD                    dwFunc = vehicleVTBL->GetTowbarPos;
-    bool                     bReturn = false;
+//https://github.com/gta-reversed/gta-reversed/blob/master/source/game_sa/Entity/Vehicle/Vehicle.cpp#L1110
+bool CVehicleSA::GetTowBarPos(CVector* pVector,bool bCheckModelInfo, CVehicle* pTrailer) {
+    if (!bCheckModelInfo)
+        return false;
 
-    DWORD       dwTrailerInt = 0;
-    CVehicleSA* pTrailerSA = dynamic_cast<CVehicleSA*>(pTrailer);
-    if (pTrailerSA)
-        dwTrailerInt = (DWORD)pTrailerSA->GetInterface();
-
-    _asm
-    {
-        mov     ecx, dwThis
-        push    dwTrailerInt
-        push    1
-        push    pVector
-        call    dwFunc
-        mov     bReturn, al
-    }
-
-    return bReturn;
+    int32                 modelIndex = this->GetModelIndex();
+    CColModelSAInterface* colModel = CModelInfoSAInterface::GetModelInfo(modelIndex)->pColModel;
+    auto const            fColRear = colModel->m_bounds.m_vecMin.fY;
+    pVector->fX = 0.0f;
+    pVector->fY = fColRear - 1.0f;
+    pVector->fZ = 0.0f;
+    return true;
 }
+
+//bool CVehicleSA::GetTowBarPos(CVector* pVector, bool bCheckModelInfo, CVehicle* pTrailer)
+//{
+//    CVehicleSAInterfaceVTBL* vehicleVTBL = (CVehicleSAInterfaceVTBL*)(m_pInterface->vtbl);
+//    DWORD                    dwThis = (DWORD)m_pInterface;
+//    DWORD                    dwFunc = vehicleVTBL->GetTowbarPos;
+//    bool                     bReturn = false;
+//
+//    DWORD       dwTrailerInt = 0;
+//    CVehicleSA* pTrailerSA = dynamic_cast<CVehicleSA*>(pTrailer);
+//    if (pTrailerSA)
+//        dwTrailerInt = (DWORD)pTrailerSA->GetInterface();
+//
+//    _asm
+//    {
+//        mov     ecx, dwThis
+//        push    dwTrailerInt
+//        push    1
+//        push    pVector
+//        call    dwFunc
+//        mov     bReturn, al
+//    }
+//
+//    return bReturn;
+//}
 
 bool CVehicleSA::GetTowHitchPos(CVector* pVector)
 {
@@ -1961,6 +1975,8 @@ bool CVehicleSA::SetOnFire(bool onFire)
 
 void CVehicleSA::StaticSetHooks()
 {
+    HookInstall(FUNC_CVehicle_GetTowBarPos, &GetTowBarPos, 5);
+
     // Setup vehicle sun glare hook
     HookInstall(FUNC_CAutomobile_OnVehiclePreRender, (DWORD)HOOK_Vehicle_PreRender, 5);
 

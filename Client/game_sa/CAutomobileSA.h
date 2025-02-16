@@ -141,6 +141,7 @@ class CAutomobileSA : public virtual CAutomobile, public virtual CVehicleSA
 public:
     CAutomobileSA() = default;
     CAutomobileSA(CAutomobileSAInterface* pInterface);
+    bool GetTowBarPos(CVector* pVector, bool ignoreModelType, CVehicle* pTrailer);
 
     CAutomobileSAInterface* GetAutomobileInterface() { return reinterpret_cast<CAutomobileSAInterface*>(GetInterface()); }
 };

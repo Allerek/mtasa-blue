@@ -32,6 +32,7 @@ struct RwTexture;
 #define FUNC_CVehicle_AddVehicleUpgrade         0x6E3290
 #define FUNC_CVehicle_RemoveVehicleUpgrade      0x6DF930
 #define FUNC_CVehicle_GetBaseVehicleType        0x411D50
+#define FUNC_CVehicle_GetTowBarPos              0x6DFBE0
 #define FUNC_CVehicle_IsUpsideDown              0x6D1D90
 #define FUNC_CVehicle_SetEngineOn               0x41BDD0
 #define FUNC_CTrain_FindPositionOnTrackFromCoors           0x6F6CC0
@@ -49,6 +50,9 @@ struct RwTexture;
 #define FUNC_CVehicle_SetWindowOpenFlag                         0x6D3080
 #define FUNC_CVehicle_ClearWindowOpenFlag                       0x6D30B0
 
+//from CTrailer
+#define FUNC_CTrailer_GetTowBarPos              0x6CFD60
+
 // from CBike
 #define FUNC_Bike_PlaceOnRoadProperly           0x6BEEB0
 #define FUNC_Automobile_PlaceOnRoadProperly     0x6AF420
@@ -61,6 +65,7 @@ struct RwTexture;
 #define FUNC_CAutomobile__Fix                   0x6A3440
 #define FUNC_CAutomobile__SpawnFlyingComponent  0x6a8580
 #define FUNC_CAutomobile__UpdateMovingCollision 0x6a1460
+#define FUNC_CAutomobile_GetTowBarPos           0x6AF250
 
 // from CHeli
 #define FUNC_CHeli__Fix                         0x6C4530
@@ -496,7 +501,7 @@ public:
     unsigned char GetCurrentGear();
     float         GetGasPedal();
 
-    bool GetTowBarPos(CVector* pVector, CVehicle* pTrailer = NULL);
+    bool GetTowBarPos(CVector* pVector, bool bCheckModelInfo, CVehicle* pTrailer = NULL);
     bool GetTowHitchPos(CVector* pVector);
     bool IsUpsideDown();
 

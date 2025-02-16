@@ -3260,7 +3260,7 @@ bool CClientVehicle::InternalSetTowLink(CClientVehicle* pTrailer)
     // Get hitch and tow (world) position
     CVector vecHitchPosition, vecTowBarPosition;
     pGameVehicle->GetTowHitchPos(&vecHitchPosition);
-    m_pVehicle->GetTowBarPos(&vecTowBarPosition, pGameVehicle);
+    m_pVehicle->GetTowBarPos(&vecTowBarPosition, true, pGameVehicle);
 
     // Calculate the new position (rotation should be set already)
     CVector vecOffset = vecHitchPosition - *pTrailerPosition;
